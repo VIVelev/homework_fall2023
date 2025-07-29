@@ -8,7 +8,7 @@ Functions to edit:
 import pickle
 import os
 import time
-import gym
+import gymnasium as gym
 
 import numpy as np
 import torch
@@ -20,6 +20,8 @@ from cs285.infrastructure.replay_buffer import ReplayBuffer
 from cs285.policies.MLP_policy import MLPPolicySL
 from cs285.policies.loaded_gaussian_policy import LoadedGaussianPolicy
 
+import warnings
+warnings.filterwarnings("ignore")
 
 # how many rollouts to save as videos to tensorboard
 MAX_NVIDEO = 2
@@ -157,7 +159,9 @@ def run_training_loop(params):
           # HINT2: use np.random.permutation to sample random indices
           # HINT3: return corresponding data points from each array (i.e., not different indices from each array)
           # for imitation learning, we only need observations and actions.  
-          ob_batch, ac_batch = TODO
+          idxs = np.random.permutation(np.arange(params['train_batch_size']))
+          ob_batch, ac_batch = ptu.from_numpy(replay_buffer.obs[idxs]), \
+                  ptu.from_numpy(replay_buffer.acs[idxs])
 
           # use the sampled data to train an agent
           train_log = actor.update(ob_batch, ac_batch)
